@@ -1,9 +1,13 @@
 # TODO: Set COMPONENT_NAME to the name of your Python package.
-set(COMPONENT_NAME template)
+set(COMPONENT_NAME dep)
 
 # TODO: List all host C++ source code files in _${COMPONENT_NAME}_sources.
 set(_${COMPONENT_NAME}_sources
     module.cc
+    ExternalAnypole.h
+    # ExternalQuadrupole.h
+    # ExternalOctupole.h
+    ExternalCoplane.h
     )
 
 # TODO: List all GPU C++ source code files in _${COMPONENT_NAME}_cu_sources.
@@ -14,6 +18,9 @@ set(_${COMPONENT_NAME}_cu_sources
 set(python_files
     __init__.py
     version.py
+    npole.py
+    coplane.py
+    units.py
     )
 
 if (ENABLE_HIP)
@@ -36,6 +43,7 @@ endif()
 target_link_libraries(_${COMPONENT_NAME}
                       PUBLIC HOOMD::_hoomd
                       PUBLIC HOOMD::_md
+                      PUBLIC HOOMD::_hpmc
                       )
 
 # Install the library.

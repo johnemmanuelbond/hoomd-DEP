@@ -1,11 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.9 FATAL_ERROR)
 
 # Name the plugin project.
-# TODO: Set the project title to the name of your Python package.
-project(hoomd_component_template LANGUAGES C CXX)
+project(hoomdDEP LANGUAGES C CXX)
 
 # Find the installed HOOMD.
-find_package(HOOMD 7.0.0 REQUIRED)
+find_package(HOOMD 7 REQUIRED)
 
 message(STATUS "Found HOOMD ${HOOMD_VERSION}: ${HOOMD_INSTALL_PREFIX}/${PYTHON_SITE_INSTALL_DIR}")
 

@@ -2,7 +2,7 @@ name: Unit test
 
 env:
   # TODO: Set COMPONENT_NAME to the name of your Python package.
-  COMPONENT_NAME: template
+  COMPONENT_NAME: hoomdDEP
 
   # Most components should not modify the rest of this file. When needed, merge in updates from
   # https://github.com/glotzerlab/hoomd-component-template/

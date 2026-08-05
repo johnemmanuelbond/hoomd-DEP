@@ -12,26 +12,25 @@ To build this component:
 1. Build and install **HOOMD-blue** from source.
 2. Obtain the component's source.
     ```
-    $ git clone https://github.com/glotzerlab/hoomd-component-template
+    $ git clone https://github.com/johnemmanuelbond/hoomd-DEP.git
     ```
 3. Configure.
     ```
-    $ cmake -B build/hoomd-component-template -S hoomd-component-template
+    $ cmake -B build/hoomd-DEP -S hoomd-DEP
     ```
 4. Build the component.
     ```
-    $ cmake --build build/hoomd-component-template
+    $ cmake --build build/hoomd-DEP
     ```
 5. Install the component.
     ```
-    $ cmake --install build/hoomd-component-template
+    $ cmake --install build/hoomd-DEP
     ```
 
 Once installed, the template is available for import via:
 ```
-import hoomd.template
+import hoomd.DEP
 ```
-(replace `template` with the `COMPONENT_NAME` you set in `src/CMakeLists.txt`).
 
 ## Creating a new component
 
