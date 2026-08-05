@@ -7,9 +7,9 @@ workflows.
 
 ## Building the component
 
-To build this component:
+To build hoomd-DEP:
 
-1. Build and install **HOOMD-blue** from source.
+1. Build and install [**HOOMD-blue**](https://hoomd-blue.readthedocs.io/en/latest/building.html) from source.
 2. Obtain the source code source.
     ```
     [~]$ git clone https://github.com/johnemmanuelbond/hoomd-DEP.git
@@ -31,6 +31,17 @@ Once installed, the template is available for import via:
 ```
 import hoomd.dep
 ```
+
+## TODO List
+
+hoomd-DEP is still a work in progress. Before this package is ready the devs need to finish:
+
+1. Write Quadrupole classes for MD and HPMC
+2. Write Octupole classes for MD and HPMC
+3. determine if the units module should be here or user-side
+4. write and build docs for hosting on readthedocs
+5. figure out which unit tests to include
+6. deterine whether github actions are worth including for this repo
 
 <!-- ## Creating a new component
 
