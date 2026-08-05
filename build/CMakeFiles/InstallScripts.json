@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/WIN/jbond13/code/hoomd-DEP/build/cmake_install.cmake",
-		"/home/WIN/jbond13/code/hoomd-DEP/build/src/cmake_install.cmake",
-		"/home/WIN/jbond13/code/hoomd-DEP/build/src/pytest/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

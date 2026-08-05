@@ -1,8 +1,0 @@
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/_dep.cpython-314-x86_64-linux-gnu.so
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/__init__.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/version.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/npole.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/coplane.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/units.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/pytest/__init__.py
-/home/WIN/jbond13/.conda/envs/hoomd-ninja/lib/python3.14/site-packages/hoomd/dep/pytest/test_version.py
