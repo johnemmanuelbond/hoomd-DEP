@@ -1,9 +1,9 @@
 # HOOMD-blue DEP component
 
-`hoomd-DEP` provides external potentials for use in both the HPMC and MD integrators within
-[**HOOMD-blue**](https://glotzerlab.engin.umich.edu/hoomd-blue/). It includes template C++ and
-Python modules, an example unit test, CMake scripts to build the component, and GitHub Actions
-workflows.
+`hoomd-DEP` provides external potentials and forces to simulate dielectrophoresis (DEP) using
+either the HPMC or MD integrators within [**HOOMD-blue**](https://glotzerlab.engin.umich.edu/hoomd-blue/).
+It includes template C++ and Python modules, an example unit test, CMake scripts to build the component,
+and GitHub Actions workflows.
 
 ## Building the component
 
@@ -22,9 +22,14 @@ To build hoomd-DEP:
     ```
     [~/hoomd-DEP/build]$ ninja
     ```
-5. Install the component.
+5. Install the component to your current hoomd installation.
     ```
     [~/hoomd-DEP/build]$ ninja install
+    ```
+    
+    Alternatively, you can link the component to your current hoomd build
+    ```
+    [~] ln -s ~/hoomd-DEP/build/src ~/hoomd-v7/build/hoomd/dep
     ```
 
 Once installed, the template is available for import via:
