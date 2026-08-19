@@ -5,8 +5,8 @@ set(COMPONENT_NAME dep)
 set(_${COMPONENT_NAME}_sources
     module.cc
     ExternalAnypole.h
-    # ExternalQuadrupole.h
-    # ExternalOctupole.h
+    ExternalQuadrupole.h
+    ExternalOctupole.h
     ExternalCoplane.h
     )
 
@@ -18,6 +18,8 @@ set(_${COMPONENT_NAME}_cu_sources
 set(python_files
     __init__.py
     version.py
+    qpole.py
+    opole.py
     npole.py
     coplane.py
     units.py

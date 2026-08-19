@@ -16,7 +16,7 @@ To build hoomd-DEP:
     ```
 3. Configure.
     ```
-    [~/hoomd-DEP]$ cmake -B build -S . GNinja -D ENABLE_MPI=ON
+    [~/hoomd-DEP]$ cmake -B build -S . -GNinja -D ENABLE_MPI=ON
     ```
 4. Build the component.
     ```
@@ -41,12 +41,10 @@ import hoomd.dep
 
 hoomd-DEP is still a work in progress. Before this package is ready the devs need to finish:
 
-1. Write Quadrupole classes for MD and HPMC
-2. Write Octupole classes for MD and HPMC
-3. determine if the units module should be here or user-side
-4. write and build docs for hosting on readthedocs
-5. figure out which unit tests to include
-6. deterine whether github actions are worth including for this repo
+1. determine if the units module should be here or user-side
+2. write and build docs for hosting on readthedocs
+3. figure out which unit tests to include
+4. deterine whether github actions are worth including for this repo
 
 <!-- ## Creating a new component
 

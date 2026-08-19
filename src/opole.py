@@ -16,12 +16,8 @@ from hoomd import variant
 
 from . import _dep
 
-def _quat_to_angle(quats):
-    """Convert an array of quaternions to an array of angles."""
-    return 2.0 * np.arctan2(quats[:,-1], quats[:,0])
-
 @hoomd.logging.modify_namespace(("hpmc", "external"))
-class ExternalCoplane(External):
+class ExternalOctupole(External):
     """
     TODO: Document your component.
     """
@@ -30,12 +26,13 @@ class ExternalCoplane(External):
         "{inherited}", inspect.cleandoc(External._doc_inherited)
     )
 
-    _cpp_class_name = 'ExternalCoplane'
+    _cpp_class_name = 'ExternalOctupole'
     _ext_module = _dep
 
     def __init__(
         self,
         electrode_gap:float,
+        electrode_orientation:variant.variant_like,
     ):
         super().__init__()
 
@@ -44,9 +41,8 @@ class ExternalCoplane(External):
             name='params',
             type_kind='particle_types',
             param_dict=TypeParameterDict(
-                k_trans=object,
-                k_rot=object,
-                m_sym=int,
+                k_perp=object,
+                k_para=object,
                 len_keys=1,
                 lenient=True
             )
@@ -54,7 +50,17 @@ class ExternalCoplane(External):
         self._add_typeparam(param_spec)
         
         # Non-type dependent configurations
+        self._q0 = electrode_orientation if isinstance(electrode_orientation, variant.Variant) else variant.Constant(electrode_orientation)
         self._dg = electrode_gap
+    
+    @property
+    def electrode_orientation(self) -> variant.Variant:
+        """The global electrode orientation angle (radians)."""
+        return self._q0 if isinstance(self._q0, variant.Variant) else variant.Constant(self._q0)
+
+    @electrode_orientation.setter
+    def electrode_orientation(self, value: variant.variant_like):
+        self._q0 = value
 
     @property
     def electrode_gap(self) -> float:
@@ -66,17 +72,19 @@ class ExternalCoplane(External):
         self._dg = value
 
     def _make_cpp_obj(self):
-        self._cpp_obj = _dep.ExternalCoplane(
+        self._cpp_obj = _dep.ExternalOctupole(
             self._simulation.state._cpp_sys_def,
             self.electrode_gap,
+            self.electrode_orientation
         )
         return self._cpp_obj
 
     def _attach_hook(self):
         # Pass only global setups to the C++ constructor on attachment
-        self._cpp_obj = _dep.ExternalCoplane(
+        self._cpp_obj = _dep.ExternalOctupole(
             self._simulation.state._cpp_sys_def,
             self.electrode_gap,
+            self.electrode_orientation
         )
         super()._attach_hook()
 
@@ -87,25 +95,25 @@ class ExternalCoplane(External):
             data = self.params[type_name]
             
             # Unpack and dynamically resolve values if they are variant timelines
-            raw_kt = data['k_trans']
-            raw_kr = data['k_rot']
+            raw_k1 = data['k_perp']
+            raw_k2 = data['k_para']
             
-            kt = raw_kt(timestep) if isinstance(raw_kt, variant.Variant) else float(raw_kt)
-            kr = raw_kr(timestep) if isinstance(raw_kr, variant.Variant) else float(raw_kr)
-            m = int(data['m_sym'])
+            k1 = raw_k1(timestep) if isinstance(raw_k1, variant.Variant) else float(raw_k1)
+            k2 = raw_k2(timestep) if isinstance(raw_k2, variant.Variant) else float(raw_k2)
             
             # Send the clean numeric values down to C++ vector space
-            self._cpp_obj.setParamsCpp(type_id, kt, kr, m)
+            self._cpp_obj.setParamsCpp(type_id, k1, k2)
 
 
 
-class ForceCoplane(Custom):
+class ForceOctupole(Custom):
     """
     TODO: Document your component.
     """
     def __init__(
         self,
         electrode_gap:float,
+        electrode_orientation:variant.variant_like,
     ):
         super().__init__(aniso=True)
 
@@ -114,9 +122,8 @@ class ForceCoplane(Custom):
             name='params',
             type_kind='particle_types',
             param_dict=TypeParameterDict(
-                k_trans=object,
-                k_rot=object,
-                m_sym=int,
+                k_para=object,
+                k_perp=object,
                 len_keys=1,
                 lenient=True
             )
@@ -124,6 +131,7 @@ class ForceCoplane(Custom):
         self._params = param_spec
         
         # Non-type dependent configurations
+        self._q0 = electrode_orientation if isinstance(electrode_orientation, variant.Variant) else variant.Constant(electrode_orientation)
         self._dg = electrode_gap
     
     @property
@@ -134,6 +142,15 @@ class ForceCoplane(Custom):
     @params.setter
     def params(self, value: TypeParameter):
         self._params = value
+
+    @property
+    def electrode_orientation(self) -> variant.Variant:
+        """The global electrode orientation angle (radians)."""
+        return self._q0 if isinstance(self._q0, variant.Variant) else variant.Constant(self._q0)
+
+    @electrode_orientation.setter
+    def electrode_orientation(self, value: variant.variant_like):
+        self._q0 = value
 
     @property
     def electrode_gap(self) -> float:
@@ -156,6 +173,7 @@ class ForceCoplane(Custom):
             arrays.potential_energy[:N] = 0.0
 
             # Resolve the global electrode angle variant for this exact timestep
+            q0 = self.electrode_orientation(timestep)
             dg = self.electrode_gap
 
             # Loop over all unique system type names to cleanly apply vectorization masks
@@ -166,42 +184,29 @@ class ForceCoplane(Custom):
                 type_data = self.params[t]
 
                 # Safe-unpack variant vs float parameters
-                raw_kt = type_data['k_trans']
-                raw_kr = type_data['k_rot']
+                raw_k1 = type_data['k_para']
+                raw_k2 = type_data['k_perp']
                 
-                kt = raw_kt(timestep) if isinstance(raw_kt, variant.Variant) else float(raw_kt)
-                kr = raw_kr(timestep) if isinstance(raw_kr, variant.Variant) else float(raw_kr)
-                m = int(type_data['m_sym'])
+                k1 = raw_k1(timestep) if isinstance(raw_k1, variant.Variant) else float(raw_k1)
+                k2 = raw_k2(timestep) if isinstance(raw_k2, variant.Variant) else float(raw_k2)
 
-                if kt != 0.0:
-                    arrays.force[idx]  = ForceCoplane.compute_forces(
-                        snap.particles.position[idx], kt, dg
-                    )
-                if kr != 0.0 and m != 0:
-                    arrays.torque[idx] = ForceCoplane.compute_torques(
-                        snap.particles.orientation[idx], kr, m
+                if k1 !=0 or k2!=0:
+                    arrays.force[idx] = ForceOctupole.compute_forces(
+                        snap.particles.position[idx], k1, k2, q0, dg
                     )
 
     @classmethod
-    def compute_forces(cls, positions, kt, dg):
+    def compute_forces(cls, positions, k_para, k_perp, q0, dg):
         """Compute the forces for a given set of particle positions."""
-        xs = np.array(positions)[:,0]
-
-        beta = 2.45
-        arg = np.clip(beta * xs / dg, -0.99*np.pi/2, 0.99*np.pi/2) # Avoid singularities
-        fx = -1.0 * kt * beta / dg * np.tan(arg) * (1 / np.cos(arg))**2
+        cosq, sinq = np.cos(q0), np.sin(q0)
+        positions = np.atleast_2d(positions)
         
+        # Calculate the projection along the electrode orientation
+        f1s = -1.0 * k_para / dg * ( positions[:, 0] * cosq + positions[:, 1] * sinq) / dg
+        f2s = -1.0 * k_perp / dg * (-positions[:, 0] * sinq + positions[:, 1] * cosq) / dg
+
         # Assemble N x 3 output layout
         forces = np.zeros_like(positions)
-        forces[:, 0] = fx
+        forces[:, 0] = (f1s * cosq) + (f2s * -sinq)
+        forces[:, 1] = (f1s * sinq) + (f2s *  cosq)
         return forces
-
-    @classmethod
-    def compute_torques(cls, orientations, kr, m):
-        """Compute the torques for a given set of particle orientations (angles)."""
-        # Translate internal quaternions  to planar angles relative to electrode orientation
-        dts = _quat_to_angle(orientations)
-        # Assemble N x 3 torque array layout (torques align strictly along z-axis)
-        torques = np.zeros_like(orientations)[:, :3]
-        torques[:, 2] = -0.5 * kr * np.sin(2.0 * m * dts)
-        return torques
