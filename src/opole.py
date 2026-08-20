@@ -192,7 +192,7 @@ class ForceOctupole(Custom):
     {inherited}
 
     **Members defined in** `ForceOctupole`
-
+        
     Attributes:
         electrode_gap (float): Separation between the electrodes in length units.
         electrode_orientation (hoomd.variant.Variant): Global electrode angle.
@@ -205,6 +205,7 @@ class ForceOctupole(Custom):
         * ``k_perp``: (`float` or `variant-like`, **required**) - :math:`k_{\\perp}` :math:`[\\mathrm{energy}]`
 
         Type: `TypeParameter` [``particle_type``, `dict`]
+    
     """
 
     __doc__ = inspect.cleandoc(__doc__).replace(

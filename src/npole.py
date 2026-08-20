@@ -89,8 +89,8 @@ class ExternalAnypole(External):
 
         Per-particle-type generalized anypole coefficients. The dictionary has the following keys:
 
-        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_{t}` :math:`[\\mathrm{energy}]`
-        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_{r}` :math:`[\\mathrm{energy}]`
+        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_t` :math:`[\\mathrm{energy}]`
+        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_r` :math:`[\\mathrm{energy}]`
         * ``m_sym``: (`int`, **required**) - :math:`m`
 
         Type: `TypeParameter` [``particle_type``, `dict`]
@@ -218,11 +218,12 @@ class ForceAnypole(Custom):
 
         Per-particle-type generalized anypole coefficients. The dictionary has the following keys:
 
-        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_{t}` :math:`[\\mathrm{energy}]`
-        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_{r}` :math:`[\\mathrm{energy}]`
+        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_t` :math:`[\\mathrm{energy}]`
+        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_r` :math:`[\\mathrm{energy}]`
         * ``m_sym``: (`int`, **required**) - :math:`m`
 
         Type: `TypeParameter` [``particle_type``, `dict`]
+    
     """
 
     __doc__ = inspect.cleandoc(__doc__).replace(
