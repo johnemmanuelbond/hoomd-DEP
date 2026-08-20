@@ -179,6 +179,8 @@ class ForceCoplane(Custom):
 
     {inherited}
 
+    **Members defined in** `ForceCoplane`
+
     Attributes:
         electrode_gap (float): Separation between the electrodes in length units.
 

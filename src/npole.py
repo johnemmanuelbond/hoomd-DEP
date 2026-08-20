@@ -208,6 +208,8 @@ class ForceAnypole(Custom):
 
     {inherited}
 
+    **Members defined in** `ForceAnypole`
+
     Attributes:
         electrode_gap (float): Characteristic separation scale in length units.
         electrode_orientation (hoomd.variant.Variant): Global field orientation.

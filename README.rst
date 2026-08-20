@@ -1,5 +1,5 @@
-hoomd-blue DEP component
-========================
+hoomd-DEP component
+===================
 
 .. description.rst
 
@@ -70,7 +70,7 @@ Alternatively, you can link the component to your current hoomd build
 
 .. code-block:: bash
    
-   [~] ln -s ~/hoomd-DEP/build/src ~/hoomd-v7/build/hoomd/dep
+   [~]$ ln -s ~/hoomd-DEP/build/src ~/hoomd-v7/build/hoomd/dep
 
 Once installed, the template is available for import via:
 

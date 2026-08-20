@@ -158,6 +158,8 @@ class ForceQuadrupole(Custom):
             force.params["A"] = {"k": 250}
     
     {inherited}
+
+    **Members defined in** `ForceQuadrupole`
             
     Attributes:
         electrode_gap (float): Separation between the electrodes in length units.

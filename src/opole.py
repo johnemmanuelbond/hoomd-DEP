@@ -191,6 +191,8 @@ class ForceOctupole(Custom):
 
     {inherited}
 
+    **Members defined in** `ForceOctupole`
+
     Attributes:
         electrode_gap (float): Separation between the electrodes in length units.
         electrode_orientation (hoomd.variant.Variant): Global electrode angle.
