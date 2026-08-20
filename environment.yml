@@ -5,6 +5,7 @@ channels:
 dependencies:
   - numpy
   - openmpi
+  - cereal
   - eigen
   - cmake
   - ninja
