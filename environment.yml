@@ -5,7 +5,9 @@ channels:
 dependencies:
   - numpy
   - openmpi
+  - eigen
   - cmake
+  - ninja
   - pybind11
   - hoomd=*=*cpu* 
   - sphinx
