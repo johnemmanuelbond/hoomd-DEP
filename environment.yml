@@ -7,6 +7,7 @@ dependencies:
   - openmpi
   - cmake
   - pybind11
+  - hoomd=*=*cpu* 
   - sphinx
   - furo
   - nbsphinx

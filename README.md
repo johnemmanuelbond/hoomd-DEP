@@ -41,10 +41,11 @@ import hoomd.dep
 
 hoomd-DEP is still a work in progress. Before this package is ready the devs need to finish:
 
-1. determine if the units module should be here or user-side
-2. automate logging within each python class using @hoomd.logging.log
-3. figure out which unit tests to include
-4. deterine whether github actions are worth including for this repo
+1. remove duplicate properties (i.e. electrode_gap) in the pybound classes
+2. determine if the units module should be here or user-side
+3. automate logging within each python class using @hoomd.logging.log
+4. figure out which unit tests to include
+5. deterine whether github actions are worth including for this repo
 
 <!-- ## Creating a new component
 
