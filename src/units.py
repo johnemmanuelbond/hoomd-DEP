@@ -106,7 +106,7 @@ def electrode_energy_scale(particle_volume=None,rel_perm_m=78,fcm=-0.4667,voltag
 
     .. math::
     
-        \\epsilon \\equiv \\frac{-P^{df}E_0^2}{kT} = \\frac{3}{2} v_p \\varepsilon_m f_{cm} \\bigg(\\frac{V}{d_g\\sqrt{8}}\\bigg)^2 \\bigg/ kT
+        \\epsilon \\equiv -\\frac{P^{df}E_0^2}{kT} = \\frac{3}{2} v_p \\varepsilon_m f_{cm} \\bigg(\\frac{V_{pp}}{d_g\\sqrt{8}}\\bigg)^2 \\bigg/ kT
 
     :param particle_volume: volume of the particle in [m], defaults to None
     :type particle_volume: int, optional

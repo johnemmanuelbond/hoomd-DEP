@@ -1,6 +1,3 @@
-// Copyright (c) 2009-2026 The Regents of the University of Michigan.
-// Part of HOOMD-blue, released under the BSD 3-Clause License.
-
 #pragma once
 
 #include "hoomd/Compute.h"
@@ -90,7 +87,6 @@ class ExternalQuadrupole : public ExternalPotential
         pybind11::dict asDict()
         {
             pybind11::dict pydict;
-            // TODO; pack per-type quantities from the ParamType struct to the Python dictionary.
             pydict["k"] = m_k_translational;
             return pydict;
         };
@@ -98,8 +94,8 @@ class ExternalQuadrupole : public ExternalPotential
         LongReal m_k_translational; // strength of the harmonic potentials in kT units
         };
 
-    std::vector<ParamType> m_params;                 // Stored indexed properties (k_translational, k_rotational, m_symmetry) for each particle type
-    Scalar m_electrode_gap;                           // Stays global (shared geometry)
+    std::vector<ParamType> m_params; // Stored indexed properties (k_translational, k_rotational, m_symmetry) for each particle type
+    Scalar m_electrode_gap;          // Stays global (shared geometry)
     };
 
 namespace detail

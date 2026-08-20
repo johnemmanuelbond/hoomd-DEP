@@ -1,6 +1,3 @@
-// Copyright (c) 2009-2026 The Regents of the University of Michigan.
-// Part of HOOMD-blue, released under the BSD 3-Clause License.
-
 #pragma once
 
 #include "hoomd/Compute.h"
@@ -105,7 +102,6 @@ class ExternalOctupole : public ExternalPotential
         pybind11::dict asDict()
         {
             pybind11::dict pydict;
-            // TODO; pack per-type quantities from the ParamType struct to the Python dictionary.
             pydict["k_para"] = m_k_translational_para;
             pydict["k_perp"] = m_k_translational_perp;
             return pydict;

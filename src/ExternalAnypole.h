@@ -1,6 +1,3 @@
-// Copyright (c) 2009-2026 The Regents of the University of Michigan.
-// Part of HOOMD-blue, released under the BSD 3-Clause License.
-
 #pragma once
 
 #include "hoomd/Compute.h"
@@ -110,7 +107,6 @@ class ExternalAnypole : public ExternalPotential
         pybind11::dict asDict()
         {
             pybind11::dict pydict;
-            // TODO; pack per-type quantities from the ParamType struct to the Python dictionary.
             pydict["k_trans"] = m_k_translational;
             pydict["k_rot"] = m_k_rotational;
             pydict["m_sym"] = m_m_symmetry;
@@ -119,7 +115,7 @@ class ExternalAnypole : public ExternalPotential
 
         LongReal m_k_translational; // strength of the harmonic potentials in kT units
         LongReal m_k_rotational;
-        int m_m_symmetry; // number of symmetrically equivalent orientations
+        int m_m_symmetry;           // number of symmetrically equivalent orientations
         };
 
     std::vector<ParamType> m_params;                 // Stored indexed properties (k_translational, k_rotational, m_symmetry) for each particle type

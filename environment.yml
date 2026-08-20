@@ -1,0 +1,14 @@
+name: hoomd-DEP
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - numpy
+  - openmpi
+  - cmake
+  - pybind11
+  - sphinx
+  - furo
+  - nbsphinx
+  - ipython
+  - pandoc

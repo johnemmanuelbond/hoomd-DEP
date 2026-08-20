@@ -1,7 +1,30 @@
-# Copyright (c) 2009-2026 The Regents of the University of Michigan.
-# Part of HOOMD-blue, released under the BSD 3-Clause License.
+# -*- coding: utf-8 -*-
+"""
+Contains external potentials (for HPMC) and external forces (for MD) that model
+an abstract multipolar DEP interaction in a generalized electrode geometry. This
+module is not intended to reproduce a specific colloidal experiment or a
+single known device architecture. Instead, it is designed as a flexible,
+future-facing framework that can represent a broad class of unknown or
+emergent multipolar systems through an orientable, symmetry-controlled
+interaction field.
 
-"""Harmonic potential that restrains particles to a lattice."""
+The effective potential energy can be written as a generalized translational
+bias along a field direction together with a symmetry-dependent rotational
+coupling:
+
+.. math::
+
+    U = \\frac{1}{2} k_{t} (\\mathbf{r}\\cdot\\hat{\\mathbf{e}})^2/d_g^2
+    + \\frac{1}{2} k_{r} \\sin^2(2m(\\theta-\\theta_0))
+
+where :math:`d_g` is the characteristic gap scale, :math:`\\hat{\\mathbf{e}}` is
+an orienting axis along :math:`\\theta_0`, :math:`\\theta` is the in-plane orientation 
+angle, and :math:`m` is the symmetry order. The coefficients :math:`k_{t}` and
+:math:`k_{r}` are treated as effective coupling strengths that can be
+adapted to different particle geometries or field configurations. As a result,
+both :py:class:`ExternalAnypole` and :py:class:`ForceAnypole` allow these
+coefficients to be specified on a per-particle-type basis.
+"""
 
 import hoomd
 import numpy as np
@@ -14,16 +37,64 @@ from hoomd.data import TypeParameter
 from hoomd.data.parameterdicts import TypeParameterDict
 from hoomd import variant
 
-from . import _dep
+try: from . import _dep
+except ImportError:
+    from unittest.mock import MagicMock
+    _dep = MagicMock()
 
 def _quat_to_angle(quats):
     """Convert an array of quaternions to an array of angles."""
     return 2.0 * np.arctan2(quats[:,-1], quats[:,0])
 
-@hoomd.logging.modify_namespace(("hpmc", "external"))
+@hoomd.logging.modify_namespace(("hpmc", "external", "ExternalAnypole"))
 class ExternalAnypole(External):
     """
-    TODO: Document your component.
+    Apply a generalized multipolar external potential with a translational bias and
+    a symmetry-controlled orientational coupling.
+
+    Args:
+        electrode_gap (float): Characteristic separation scale in length units.
+        electrode_orientation (float or hoomd.variant.Variant): Global orientation
+            angle in radians.
+
+    This class is intentionally abstract: it is not written to reproduce one
+    specific experimental architecture, but to provide a flexible template for
+    future systems whose effective interactions are described by a generalized
+    orientable field. The field is defined by a global gap,
+    ``electrode_gap``, a global orientation, ``electrode_orientation``, and
+    per-type parameters ``params[type].k_trans``, ``params[type].k_rot``, and
+    ``params[type].m_sym``.
+
+    Example:
+        .. code-block:: python
+
+            external = hoomd.dep.ExternalAnypole(
+                electrode_gap=100.0,
+                electrode_orientation=3.1415/4,
+            )
+            external.params["A"] = {"k_trans": 250, "k_rot": 100, "m_sym": 2}
+
+    Note:
+        `ExternalAnypole` does not support execution on GPUs.
+
+    {inherited}
+
+    **Members defined in** `ExternalAnypole`
+
+    Attributes:
+        electrode_gap (float): Characteristic separation scale in length units.
+        electrode_orientation (hoomd.variant.Variant): Global field orientation.
+
+    .. py:attribute:: params
+
+        Per-particle-type generalized anypole coefficients. The dictionary has the following keys:
+
+        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_{t}` :math:`[\\mathrm{energy}]`
+        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_{r}` :math:`[\\mathrm{energy}]`
+        * ``m_sym``: (`int`, **required**) - :math:`m`
+
+        Type: `TypeParameter` [``particle_type``, `dict`]
+
     """
 
     __doc__ = inspect.cleandoc(__doc__).replace(
@@ -114,8 +185,48 @@ class ExternalAnypole(External):
 
 class ForceAnypole(Custom):
     """
-    TODO: Document your component.
+    Apply a generalized multipolar force with an orientational torque term.
+
+    Args:
+        electrode_gap (float): Characteristic separation scale in length units.
+        electrode_orientation (float or hoomd.variant.Variant): Global orientation
+            angle in radians.
+
+    This force is designed as a general-purpose template for unknown or future
+    multipolar systems rather than a strict model of a specific colloidal setup.
+    It combines a translational field along the local electrode direction with a
+    torque that depends on the particle orientation relative to the field.
+
+    Example:
+        .. code-block:: python
+
+            force = hoomd.dep.ForceAnypole(
+                electrode_gap=100.0,
+                electrode_orientation=3.1415/4,
+            )
+            force.params["A"] = {"k_trans": 250, "k_rot": 100, "m_sym": 2}
+
+    {inherited}
+
+    Attributes:
+        electrode_gap (float): Characteristic separation scale in length units.
+        electrode_orientation (hoomd.variant.Variant): Global field orientation.
+
+    .. py:attribute:: params
+
+        Per-particle-type generalized anypole coefficients. The dictionary has the following keys:
+
+        * ``k_trans``: (`float` or `variant-like`, **required**) - :math:`k_{t}` :math:`[\\mathrm{energy}]`
+        * ``k_rot``: (`float` or `variant-like`, **required**) - :math:`k_{r}` :math:`[\\mathrm{energy}]`
+        * ``m_sym``: (`int`, **required**) - :math:`m`
+
+        Type: `TypeParameter` [``particle_type``, `dict`]
     """
+
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Custom._doc_inherited)
+    )
+
     def __init__(
         self,
         electrode_gap:float,
@@ -143,7 +254,6 @@ class ForceAnypole(Custom):
     
     @property
     def params(self) -> TypeParameter:
-        """The type-dependent parameters for the force."""
         return self._params
 
     @params.setter
@@ -152,7 +262,6 @@ class ForceAnypole(Custom):
 
     @property
     def electrode_orientation(self) -> variant.Variant:
-        """The global electrode orientation angle (radians)."""
         return self._q0 if isinstance(self._q0, variant.Variant) else variant.Constant(self._q0)
 
     @electrode_orientation.setter
@@ -161,7 +270,6 @@ class ForceAnypole(Custom):
 
     @property
     def electrode_gap(self) -> float:
-        """The global electrode gap distance (length units)."""
         return float(self._dg)
 
     @electrode_gap.setter
@@ -169,6 +277,11 @@ class ForceAnypole(Custom):
         self._dg = value
 
     def set_forces(self, timestep):
+        """Set the forces and torques in the simulation loop.
+
+        Args:
+            timestep (int): The current timestep in the simulation.
+        """
         with self._state.cpu_local_snapshot as snap, self.cpu_local_force_arrays as arrays:
             N = len(snap.particles.position)
             if N == 0:
@@ -209,7 +322,17 @@ class ForceAnypole(Custom):
 
     @classmethod
     def compute_forces(cls, positions, kt, q0, dg):
-        """Compute the forces for a given set of particle positions."""
+        """Compute the generalized translational force along the field direction.
+
+        Args:
+            positions (np.ndarray): An N x 3 array of particle positions.
+            kt (float): Translational coupling strength.
+            q0 (float): Global orientation angle in radians.
+            dg (float): The characteristic electrode gap scale.
+
+        Returns:
+            np.ndarray: An N x 3 array of forces.
+        """
         cosq, sinq = np.cos(q0), np.sin(q0)
         positions = np.atleast_2d(positions)
         
@@ -225,7 +348,17 @@ class ForceAnypole(Custom):
 
     @classmethod
     def compute_torques(cls, orientations, kr, q0, m):
-        """Compute the torques for a given set of particle orientations (angles)."""
+        """Compute the symmetry-controlled orientational torque.
+
+        Args:
+            orientations (np.ndarray): An N x 4 array of particle quaternions.
+            kr (float): Rotational coupling strength.
+            q0 (float): Global field orientation angle in radians.
+            m (int): Angular symmetry order of the generalized field.
+
+        Returns:
+            np.ndarray: An N x 3 array of torques, with the z component active.
+        """
         # Translate internal quaternions  to planar angles relative to electrode orientation
         dts = _quat_to_angle(orientations) - q0
 

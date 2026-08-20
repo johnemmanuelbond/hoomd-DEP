@@ -1,7 +1,5 @@
-# TODO: Set COMPONENT_NAME to the name of your Python package.
 set(COMPONENT_NAME dep)
 
-# TODO: List all host C++ source code files in _${COMPONENT_NAME}_sources.
 set(_${COMPONENT_NAME}_sources
     module.cc
     ExternalAnypole.h
@@ -14,7 +12,6 @@ set(_${COMPONENT_NAME}_sources
 set(_${COMPONENT_NAME}_cu_sources
     )
 
-# TODO: List all Python modules in python_files.
 set(python_files
     __init__.py
     version.py

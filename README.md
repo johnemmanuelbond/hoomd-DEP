@@ -42,7 +42,7 @@ import hoomd.dep
 hoomd-DEP is still a work in progress. Before this package is ready the devs need to finish:
 
 1. determine if the units module should be here or user-side
-2. write and build docs for hosting on readthedocs
+2. automate logging within each python class using @hoomd.logging.log
 3. figure out which unit tests to include
 4. deterine whether github actions are worth including for this repo
 
