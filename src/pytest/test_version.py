@@ -3,9 +3,9 @@
 
 """Test the version module."""
 
-import hoomd.template
+import hoomd.dep
 
 
 def test_version():
     """Test the version attribute."""
-    assert hoomd.template.version.version == '0.0.1'
+    assert hoomd.dep.version.version == '1.0.0'

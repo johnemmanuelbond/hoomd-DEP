@@ -72,7 +72,7 @@ Alternatively, you can link the component to your current hoomd build
    
    [~]$ ln -s ~/hoomd-DEP/build/src ~/hoomd-v7/build/hoomd/dep
 
-Once installed, the template is available for import via:
+Once installed, the component is available for import via:
 
 .. code-block:: python
    

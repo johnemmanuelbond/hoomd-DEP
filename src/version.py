@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 """Version information."""
 
-version = '0.0.1'
+version = '1.0.0'
